@@ -26,3 +26,8 @@ replay_pid*
 *.settings/
 *.classpath
 *.project
+
+*target/
+*.properties
+*.DS_Store
+*.vscode
