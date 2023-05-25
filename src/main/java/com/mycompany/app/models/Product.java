@@ -12,9 +12,9 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Product {
-    private String product_id;
-    private String name;
-    private String description;
-    private double price;
-    private double rating;  
+  private String product_id;
+  private String name;
+  private String description;
+  private double price;
+  private double rating;
 }
