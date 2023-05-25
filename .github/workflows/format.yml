@@ -13,7 +13,7 @@ jobs:
     steps:
       # The branch or tag ref that triggered the workflow will be checked out.
       # https://github.com/actions/checkout
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       # will format all Java files in the repository and commit the changes.
       - uses: axel-op/googlejavaformat-action@v3.6.0
         with:
