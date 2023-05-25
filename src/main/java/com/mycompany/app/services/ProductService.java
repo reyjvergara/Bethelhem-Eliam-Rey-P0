@@ -6,13 +6,13 @@ import com.mycompany.app.daos.ProductDAO;
 import com.mycompany.app.models.Product;
 
 public class ProductService {
-    private final ProductDAO productDAO;
+  private final ProductDAO productDAO;
 
-    public ProductService(ProductDAO productDAO){
-        this.productDAO = productDAO;
-    }
+  public ProductService(ProductDAO productDAO) {
+    this.productDAO = productDAO;
+  }
 
-    public List<Product> getAllProducts(){
-        return productDAO.findAll();
-    }
+  public List<Product> getAllProducts() {
+    return productDAO.findAll();
+  }
 }

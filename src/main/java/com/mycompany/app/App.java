@@ -1,6 +1,5 @@
 package com.mycompany.app;
 
-import java.util.Scanner;
 
 import com.mycompany.app.services.RouterService;
 
