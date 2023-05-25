@@ -61,4 +61,12 @@ public class ProductDAO implements CrudDAO<Product> {
     }
     return allProducts;
   }
+
+    public List<Product> browseProducts(String category){
+        throw new UnsupportedOperationException();
+    }
+
+    public List<Product> searchProducts(String searchString){
+        throw new UnsupportedOperationException();
+    }
 }
