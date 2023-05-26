@@ -2,7 +2,7 @@ package com.mycompany.app.daos;
 
 import java.util.List;
 
-public class ShoppingCart implements CrudDAO {
+public class ShoppingCartDAO implements CrudDAO {
 
   @Override
   public void save(Object obj) {
