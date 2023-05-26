@@ -10,7 +10,6 @@ public class RouterService {
   public void navigate(String path, Scanner scan) {
 
     switch (path) {
-
       case "/products":
         new ProductScreen(this, getProductService()).start(scan);
       case "/registration":

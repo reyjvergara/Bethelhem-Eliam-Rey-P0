@@ -1,6 +1,5 @@
 package com.mycompany.app;
 
-
 import com.mycompany.app.services.RouterService;
 
 public class App {

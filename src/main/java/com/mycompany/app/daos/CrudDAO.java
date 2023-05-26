@@ -38,6 +38,5 @@ public interface CrudDAO<T> {
    *
    * @return a list of all objects
    */
-
   List<T> findAll();
 }
