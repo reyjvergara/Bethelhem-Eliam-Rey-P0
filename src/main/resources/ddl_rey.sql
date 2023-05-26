@@ -1,11 +1,11 @@
-drop table if exists users;
+DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS shopping_cart;
 DROP TABLE IF EXISTS order_history;
 
 CREATE TABLE users(
-    id VARCHAR PRIMARY key,
-    username VARCHAR not null UNIQUE,
+    "id" VARCHAR PRIMARY key,
+    "username" VARCHAR not null UNIQUE,
     "password" VARCHAR not NULL
 );
 
