@@ -1,3 +1,4 @@
+
 -- DROP TABLE IF EXISTS ecommerce.users CASCADE;
 -- DROP TABLE IF EXISTS ecommerce.products CASCADE;
 -- DROP TABLE IF EXISTS ecommerce.shopping_cart CASCADE;
@@ -7,8 +8,8 @@
 -- DROP TABLE IF EXISTS ecommerce.reviews CASCADE;
 
 CREATE TABLE users(
-    id VARCHAR PRIMARY KEY,
-    username VARCHAR NOT NULL UNIQUE,
+    "id" VARCHAR PRIMARY KEY,
+    "username" VARCHAR NOT NULL UNIQUE,
     "password" VARCHAR NOT NULL
 );
 

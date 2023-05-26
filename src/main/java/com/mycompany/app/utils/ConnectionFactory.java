@@ -23,7 +23,6 @@ public class ConnectionFactory {
   // constructor
   private ConnectionFactory() throws ClassNotFoundException, IOException, SQLException {
     Class.forName("org.postgresql.Driver");
-    System.out.println("we get to this line");
     Properties props = getProperties();
     connection =
         DriverManager.getConnection(

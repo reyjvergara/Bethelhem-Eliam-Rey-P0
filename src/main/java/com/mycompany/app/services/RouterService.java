@@ -10,11 +10,10 @@ public class RouterService {
   public void navigate(String path, Scanner scan) {
 
     switch (path) {
-        /*case "/home":
-        new HomeScreen(this).start(scan);
-        break;*/
+
       case "/products":
         new ProductScreen(this, getProductService()).start(scan);
+      case "/registration":
       default:
         break;
     }
