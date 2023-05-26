@@ -3,7 +3,7 @@ package com.mycompany.app.services;
 import java.util.Scanner;
 
 import com.mycompany.app.daos.ProductDAO;
-//import com.mycompany.app.screens.HomeScreen;
+// import com.mycompany.app.screens.HomeScreen;
 import com.mycompany.app.screens.ProductScreen;
 
 public class RouterService {
@@ -21,7 +21,7 @@ public class RouterService {
         }
     }
 
-    private ProductService getProductService(){
-        return new ProductService(new ProductDAO());
-    }
+  private ProductService getProductService() {
+    return new ProductService(new ProductDAO());
+  }
 }

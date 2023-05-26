@@ -7,8 +7,8 @@
 -- DROP TABLE IF EXISTS ecommerce.reviews CASCADE;
 
 CREATE TABLE users(
-    id VARCHAR PRIMARY KEY,
-    username VARCHAR NOT NULL UNIQUE,
+    "id" VARCHAR PRIMARY KEY,
+    "username" VARCHAR NOT NULL UNIQUE,
     "password" VARCHAR NOT NULL
 );
 
