@@ -5,11 +5,19 @@
 -- DROP TABLE IF EXISTS ecommerce.order_history CASCADE;
 -- DROP TABLE IF EXISTS ecommerce.order_items CASCADE;
 -- DROP TABLE IF EXISTS ecommerce.reviews CASCADE;
+-- DROP TABLE IF EXISTS ecommerce.roles CASCADE;
+
+CREATE TABLE roles (
+    "role_id" VARCHAR PRIMARY KEY,
+    "name" VARCHAR NOT NULL
+);
 
 CREATE TABLE users(
     "id" VARCHAR PRIMARY KEY,
     "username" VARCHAR NOT NULL UNIQUE,
-    "password" VARCHAR NOT NULL
+    "password" VARCHAR NOT NULL,
+    "role_id" VARCHAR NOT NULL,
+    FOREIGN KEY (role_id) REFERENCES roles (id)
 );
 
 CREATE TABLE shopping_cart(
