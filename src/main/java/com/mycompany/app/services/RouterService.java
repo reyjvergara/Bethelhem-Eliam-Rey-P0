@@ -15,6 +15,7 @@ public class RouterService {
                 break;*/
             case "/products":
                 new ProductScreen(this, getProductService()).start(scan);
+            case "/registration":
             default:
                 break;
         }
