@@ -13,13 +13,14 @@ public class UserDAO implements CrudDAO<User> {
   @Override
   public void save(User obj) {
     try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-      String sql = "INSERT INTO users (id, username, password) VALUES (?, ?, ?)";
+      String sql = "INSERT INTO users (id, username, password, role_id) VALUES (?, ?, ?, ?)";
 
       try (PreparedStatement ps = conn.prepareStatement(sql)) {
         // Set values for prepared statement parameters
         ps.setString(1, obj.getId());
         ps.setString(2, obj.getUsername());
         ps.setString(3, obj.getPassword());
+        ps.setString(4, obj.getRole_id());
 
         // Execute the SQL statement
         ps.executeUpdate();
