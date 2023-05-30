@@ -23,36 +23,38 @@ public class ShoppingCartDAO implements CrudDAO<Product> {
   @Override
   public void update(String id) {
     // Update will modify the items in the list whenever one item needs to be changed
-    // Needs to find an item first, then will change quantity if found in list. If quantity falls below 1, Product is removed from list
+    // Needs to find an item first, then will change quantity if found in list. If quantity falls
+    // below 1, Product is removed from list
 
     throw new UnsupportedOperationException("Unimplemented method 'update'");
   }
 
-  public void addToCart(Product prod, int quantity, String username, String password){
+  public void addToCart(Product prod, int quantity, String username, String password) {
     // first check if prod has been added to cart
-    if( checkIfProdExists( getShoppingCartIdWithUID(findbyLoginHelperUID(username, password)), prod)){
+    if (checkIfProdExists(
+        getShoppingCartIdWithUID(findbyLoginHelperUID(username, password)), prod)) {
       // update quantity
-    }else{
-      //add to cart
-      try(Connection conn = ConnectionFactory.getInstance().getConnection()){
-        String sql = "insert into cart_items (id, quantity, price, cart_id, product_id) values (?,?,?,?,?)";
-        try(PreparedStatement ps = conn.prepareStatement(sql)){
+    } else {
+      // add to cart
+      try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+        String sql =
+            "insert into cart_items (id, quantity, price, cart_id, product_id) values (?,?,?,?,?)";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
           ps.setString(1, UUID.randomUUID().toString());
           ps.setInt(2, quantity);
           ps.setDouble(3, prod.getPrice());
           ps.setString(4, getShoppingCartIdWithUID(findbyLoginHelperUID(username, password)));
           ps.setString(5, prod.getProduct_id());
         }
-      } catch( SQLException e ){
+      } catch (SQLException e) {
         throw new RuntimeException("Unable to connect to DB", e);
-      } catch ( IOException e ){
+      } catch (IOException e) {
         throw new RuntimeException("Cannot find application.properties", e);
-      } catch (ClassNotFoundException e){
+      } catch (ClassNotFoundException e) {
         throw new RuntimeException("Unable to load JDBC driver", e);
       }
     }
   }
-
 
   @Override
   public void delete(String id) {
@@ -65,58 +67,55 @@ public class ShoppingCartDAO implements CrudDAO<Product> {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'findById'");
   }
-@Override
+
+  @Override
   public List<Product> findAll() {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'findAll'");
   }
 
-
-
   /* --------------------Helper Methods-------------------------------- */
   /* ------------------------------------------------------------------ */
 
-
   /**
-   * 
    * @param c_id
    * @param prod
    * @return true or false if product exists given the cart_id and product_id
    */
-
-  public boolean checkIfProdExists(String c_id, Product prod){
-    try( Connection conn = ConnectionFactory.getInstance().getConnection()){
+  public boolean checkIfProdExists(String c_id, Product prod) {
+    try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
       String sql = "Select * from cart_items where cart_id=? and product_id = ?";
-      try(PreparedStatement ps = conn.prepareStatement(sql)){
+      try (PreparedStatement ps = conn.prepareStatement(sql)) {
         ps.setString(1, c_id);
         ps.setString(2, prod.getProduct_id());
-        try(ResultSet rs = ps.executeQuery()){
-          if(rs.next()){
+        try (ResultSet rs = ps.executeQuery()) {
+          if (rs.next()) {
             return true;
           }
           return false;
         }
       }
-    } catch( SQLException e ){
+    } catch (SQLException e) {
       throw new RuntimeException("Unable to connect to DB", e);
-    } catch ( IOException e ){
+    } catch (IOException e) {
       throw new RuntimeException("Cannot find application.properties", e);
-    } catch (ClassNotFoundException e){
+    } catch (ClassNotFoundException e) {
       throw new RuntimeException("Unable to load JDBC driver", e);
     }
   }
 
-  public ShoppingCart findByLoginHelperSCID(String username, String password){
-    if(findbyLoginHelperUID(username, password) == null){return new ShoppingCart();}
-    else{ 
+  public ShoppingCart findByLoginHelperSCID(String username, String password) {
+    if (findbyLoginHelperUID(username, password) == null) {
+      return new ShoppingCart();
+    } else {
       ShoppingCart sc = new ShoppingCart();
       // getting the shopping_cart_id given the UID
-      try(Connection conn = ConnectionFactory.getInstance().getConnection()){
+      try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
         String sql = "SELECT * FROM shopping_cart WHERE user_id = ? ";
-        try(PreparedStatement ps = conn.prepareStatement(sql)){
-          ps.setString( 1, findbyLoginHelperUID(username, password) );
-          try( ResultSet rs = ps.executeQuery() ){
-            while(rs.next()){
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+          ps.setString(1, findbyLoginHelperUID(username, password));
+          try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
               Product p = new Product();
               p.setProduct_id(rs.getString("product_id"));
               p.setName(rs.getString("name"));
@@ -130,59 +129,58 @@ public class ShoppingCartDAO implements CrudDAO<Product> {
             }
           }
         }
-      } catch( SQLException e ){
+      } catch (SQLException e) {
         throw new RuntimeException("Unable to connect to DB", e);
-      } catch ( IOException e ){
+      } catch (IOException e) {
         throw new RuntimeException("Cannot find application.properties", e);
-      } catch (ClassNotFoundException e){
+      } catch (ClassNotFoundException e) {
         throw new RuntimeException("Unable to load JDBC driver", e);
       }
       return sc;
     }
   }
-  
+
   /**
-   * Gets the shopping cart id given the user id
-   * If the user_id cannot get a cart_id 
-   * We call a method to make a new one
+   * Gets the shopping cart id given the user id If the user_id cannot get a cart_id We call a
+   * method to make a new one
    */
-  public String getShoppingCartIdWithUID(String uid){
-    try(Connection conn = ConnectionFactory.getInstance().getConnection()){
+  public String getShoppingCartIdWithUID(String uid) {
+    try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
       String sql = "SELECT * FROM shopping_cart WHERE user_id = ?";
-      try(PreparedStatement ps = conn.prepareStatement(sql)){
+      try (PreparedStatement ps = conn.prepareStatement(sql)) {
         ps.setString(1, uid);
-        try(ResultSet rs = ps.executeQuery()){
-          if(rs.next()){
+        try (ResultSet rs = ps.executeQuery()) {
+          if (rs.next()) {
             return rs.getString("cart_id");
-          } 
+          }
           return makeNewShoppingCartId(uid);
         }
       }
-    } catch( SQLException e ){
+    } catch (SQLException e) {
       throw new RuntimeException("Unable to connect to DB", e);
-    } catch ( IOException e ){
+    } catch (IOException e) {
       throw new RuntimeException("Cannot find application.properties", e);
-    } catch (ClassNotFoundException e){
+    } catch (ClassNotFoundException e) {
       throw new RuntimeException("Unable to load JDBC driver", e);
     }
   }
 
   /**
-   * Creates a new cart_id given a user_id in the shopping_cart table
-   * This method will only be called once ever per unique user_id user
-   * Users only have one shopping cart id in relation to them
+   * Creates a new cart_id given a user_id in the shopping_cart table This method will only be
+   * called once ever per unique user_id user Users only have one shopping cart id in relation to
+   * them
    */
-  public String makeNewShoppingCartId(String uid){
-    try(Connection conn = ConnectionFactory.getInstance().getConnection()){
+  public String makeNewShoppingCartId(String uid) {
+    try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
       String sql = "INSERT INTO shopping_cart (cart_id, user_id) VALUES (?, ?)";
-        try(PreparedStatement ps = conn.prepareStatement(sql)){
-          String cart_id = UUID.randomUUID().toString();
-          ps.setString(1, cart_id);
-          ps.setString(2, uid);
-          ps.executeUpdate();
-          return cart_id;
-        }
-    } catch(SQLException e) {
+      try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        String cart_id = UUID.randomUUID().toString();
+        ps.setString(1, cart_id);
+        ps.setString(2, uid);
+        ps.executeUpdate();
+        return cart_id;
+      }
+    } catch (SQLException e) {
       throw new RuntimeException("Unable to connect to the database", e);
     } catch (IOException e) {
       throw new RuntimeException("Cannot find application.properties", e);
@@ -192,25 +190,24 @@ public class ShoppingCartDAO implements CrudDAO<Product> {
   }
 
   /**
-   * 
    * @param username
    * @param password
    * @return the user_id of a user given correct username and password
    */
-  public String findbyLoginHelperUID(String username, String password){
-    try(Connection conn = ConnectionFactory.getInstance().getConnection()){
+  public String findbyLoginHelperUID(String username, String password) {
+    try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
       String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
 
-      try( PreparedStatement ps = conn.prepareStatement(sql)){
+      try (PreparedStatement ps = conn.prepareStatement(sql)) {
         ps.setString(1, username);
         ps.setString(2, password);
-        try( ResultSet rs = ps.executeQuery() ){
-          if(rs.next()){
+        try (ResultSet rs = ps.executeQuery()) {
+          if (rs.next()) {
             return (rs.getString("id"));
           }
         }
       }
-    } catch(SQLException e) {
+    } catch (SQLException e) {
       throw new RuntimeException("Unable to connect to the database", e);
     } catch (IOException e) {
       throw new RuntimeException("Cannot find application.properties", e);
@@ -218,6 +215,5 @@ public class ShoppingCartDAO implements CrudDAO<Product> {
       throw new RuntimeException("Unable to load JDBC driver", e);
     }
     return null;
-    
   }
 }
