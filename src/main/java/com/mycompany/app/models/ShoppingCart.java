@@ -1,4 +1,5 @@
 package com.mycompany.app.models;
+
 import java.util.List;
 import java.util.ArrayList;
 import lombok.AllArgsConstructor;
@@ -13,12 +14,8 @@ import lombok.ToString;
 public class ShoppingCart {
   private List<Product> shop_cart;
 
-  /**
-   * Initializes the ShoppingCart class with an empty 
-   * ArrayList when created
-   */
-  public ShoppingCart(){
+  /** Initializes the ShoppingCart class with an empty ArrayList when created */
+  public ShoppingCart() {
     this.shop_cart = new ArrayList<>();
   }
-
 }
