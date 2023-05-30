@@ -33,7 +33,10 @@ public class ShoppingCartDAO implements CrudDAO<Product> {
     // first check if prod has been added to cart
     if (checkIfProdExists(
         getShoppingCartIdWithUID(findbyLoginHelperUID(username, password)), prod)) {
-      updateQuantity(getShoppingCartIdWithUID(findbyLoginHelperUID(username, password)), prod.getProduct_id(), quantity);
+      updateQuantity(
+          getShoppingCartIdWithUID(findbyLoginHelperUID(username, password)),
+          prod.getProduct_id(),
+          quantity);
     } else {
       // add to cart
       try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
@@ -77,46 +80,47 @@ public class ShoppingCartDAO implements CrudDAO<Product> {
   /* --------------------Helper Methods-------------------------------- */
   /* ------------------------------------------------------------------ */
 
-
-    public void updateQuantity(String cart_id, String product_id, int quantity){
-      int old_quantity = getQuantity(cart_id, product_id);
-      try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-        String sql = "Update cart_items set quantity = ? where cart_id = ? and product_id = ?";
-        try(PreparedStatement ps = conn.prepareStatement(sql)){
-          ps.setInt( 1, (old_quantity + quantity) );
-          ps.setString(2, cart_id);
-          ps.setString(3, product_id);
-          ps.executeUpdate();
-        }
-      } catch (SQLException e) {
-        throw new RuntimeException("Unable to connect to DB", e);
-      } catch (IOException e) {
-        throw new RuntimeException("Cannot find application.properties", e);
-      } catch (ClassNotFoundException e) {
-        throw new RuntimeException("Unable to load JDBC driver", e);
+  public void updateQuantity(String cart_id, String product_id, int quantity) {
+    int old_quantity = getQuantity(cart_id, product_id);
+    try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+      String sql = "Update cart_items set quantity = ? where cart_id = ? and product_id = ?";
+      try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, (old_quantity + quantity));
+        ps.setString(2, cart_id);
+        ps.setString(3, product_id);
+        ps.executeUpdate();
       }
+    } catch (SQLException e) {
+      throw new RuntimeException("Unable to connect to DB", e);
+    } catch (IOException e) {
+      throw new RuntimeException("Cannot find application.properties", e);
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException("Unable to load JDBC driver", e);
     }
+  }
 
-    public int getQuantity(String cart_id, String product_id){
-      try(Connection conn = ConnectionFactory.getInstance().getConnection()){
-        String sql = "SELECT * FROM cart_items where cart_id=? AND product_id =?";
-        try(PreparedStatement ps = conn.prepareStatement(sql)){
-          ps.setString(1, cart_id);
-          ps.setString(2, product_id);
-          try(ResultSet rs = ps.executeQuery()){
-            if(rs.next()){
-              return rs.getInt("quantity");
-            } return 0;
+  public int getQuantity(String cart_id, String product_id) {
+    try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+      String sql = "SELECT * FROM cart_items where cart_id=? AND product_id =?";
+      try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, cart_id);
+        ps.setString(2, product_id);
+        try (ResultSet rs = ps.executeQuery()) {
+          if (rs.next()) {
+            return rs.getInt("quantity");
           }
+          return 0;
         }
-      }catch (SQLException e) {
-        throw new RuntimeException("Unable to connect to DB", e);
-      } catch (IOException e) {
-        throw new RuntimeException("Cannot find application.properties", e);
-      } catch (ClassNotFoundException e) {
-        throw new RuntimeException("Unable to load JDBC driver", e);
       }
+    } catch (SQLException e) {
+      throw new RuntimeException("Unable to connect to DB", e);
+    } catch (IOException e) {
+      throw new RuntimeException("Cannot find application.properties", e);
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException("Unable to load JDBC driver", e);
     }
+  }
+
   /**
    * @param c_id
    * @param prod
