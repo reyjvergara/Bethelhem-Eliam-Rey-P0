@@ -18,4 +18,6 @@ public class Product {
   private double price;
   private double rating;
   private int quantity;
+  private String category1;
+  private String category2;
 }
