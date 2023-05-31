@@ -14,34 +14,47 @@ import com.mycompany.app.screens.HomeScreen;
 
 public class RouterService {
   public void navigate(String path, Scanner scan) {
-
-    switch (path) {
-      case "/home":
-        new HomeScreen(this).start(scan);
-        break;
-      case "/login":
-        new LoginScreen(getUserService(), this).start(scan);
-      case "/register":
-        new RegistrationScreen(getUserService(), this).start(scan);
-      case "/reviews":
-      case "/cart":
-      case "/checkout":
-      default:
-        break;
+    exit:
+    {
+      while(true){
+        switch (path) {
+          case "/home":
+            new HomeScreen(this).start(scan);
+            break;
+          case "/login":
+            new LoginScreen(getUserService(), this).start(scan);
+            break;
+          case "/register":
+            new RegistrationScreen(getUserService(), this).start(scan);
+            break;
+          case "/reviews":
+          case "/cart":
+          case "/checkout":
+          default:
+            break;
+        }
+      }
     }
   }
 
   public void navigate(String path, Scanner scan, String username) {
-    switch (path) {
-      case "/products":
-        new ProductScreen(this, getProductService(), getShoppingCartService(), username)
-            .start(scan);
-      case "/reviews":
-      case "/shoppingcart":
-        new ShoppingCartScreen(this, getShoppingCartService(), username).start(scan);
-      case "/checkout":
-      default:
+    exit:
+    {
+      switch (path) {
+        case "/products":
+          new ProductScreen(this, getProductService(), getShoppingCartService(), username)
+              .start(scan);
+              break;
+        case "/reviews":
         break;
+        case "/shoppingcart":
+          new ShoppingCartScreen(this, getShoppingCartService(), username).start(scan);
+          break exit;
+        case "/checkout":
+        break;
+        default:
+          break;
+      }
     }
   }
 

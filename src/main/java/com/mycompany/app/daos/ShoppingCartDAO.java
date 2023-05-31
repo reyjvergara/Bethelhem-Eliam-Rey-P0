@@ -14,18 +14,18 @@ import com.mycompany.app.utils.ConnectionFactory;
 
 public class ShoppingCartDAO {
 
-  public void addToCart(Product prod, int quantity, String username) {
+  public void addToCart(Product prod, int quantity, String userId, String cartId) {
     // first check if prod has been added to cart
-    if (checkIfProdExists(getShoppingCartIdWithUID(findbyLoginHelperUID(username)), prod)) {
+    if (checkIfProdExists(cartId, prod)) {
       updateQuantity(
-          getShoppingCartIdWithUID(findbyLoginHelperUID(username)), prod.getProduct_id(), quantity);
+          cartId, prod.getProduct_id(), quantity);
     } else {
       // add to cart
-      addNewToCart(prod, quantity, username);
+      addNewToCart(prod, quantity, cartId);
     }
   }
 
-  public void addNewToCart(Product prod, int quantity, String username) {
+  public void addNewToCart(Product prod, int quantity, String cartId) {
     try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
       String sql =
           "insert into cart_items (id, quantity, price, cart_id, product_id) values (?, ?, ?, ?,"
@@ -34,13 +34,13 @@ public class ShoppingCartDAO {
         ps.setString(1, UUID.randomUUID().toString());
         ps.setInt(2, quantity);
         ps.setDouble(3, prod.getPrice());
-        ps.setString(4, getShoppingCartIdWithUID(findbyLoginHelperUID(username)));
+        ps.setString(4, cartId);
         ps.setString(5, prod.getProduct_id());
         System.out.println(ps.toString());
         ps.executeUpdate();
       }
     } catch (SQLException e) {
-      throw new RuntimeException("Unable to connect to DB cart_items", e);
+      throw new RuntimeException("Unable to connect to DB cart_items \n", e);
     } catch (IOException e) {
       throw new RuntimeException("Cannot find application.properties", e);
     } catch (ClassNotFoundException e) {
@@ -65,21 +65,21 @@ public class ShoppingCartDAO {
     }
   }
 
-  public void deleteProduct(Product prod, int quantity, String username) {
+  public void deleteProduct(Product prod, int quantity, String userId, String cartId) {
     int old_quantity =
         getQuantitySC(
-            getShoppingCartIdWithUID(findbyLoginHelperUID(username)), prod.getProduct_id());
+            cartId, prod.getProduct_id());
     if (old_quantity <= quantity) {
       // we want to remove this Product from the cart_items table
       try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
         String sql = "DELETE FROM cart_items where cart_id = ? AND product_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-          ps.setString(1, getShoppingCartIdWithUID(findbyLoginHelperUID(username)));
+          ps.setString(1, cartId);
           ps.setString(2, prod.getProduct_id());
           ps.executeUpdate();
         }
       } catch (SQLException e) {
-        throw new RuntimeException("Unable to connect to DB", e);
+        throw new RuntimeException("Unable to connect to DB delete prod", e);
       } catch (IOException e) {
         throw new RuntimeException("Cannot find application.properties", e);
       } catch (ClassNotFoundException e) {
@@ -88,7 +88,7 @@ public class ShoppingCartDAO {
     } else {
       // just update the value of Product's quantity in cart_items
       updateQuantity(
-          getShoppingCartIdWithUID(findbyLoginHelperUID(username)),
+          getShoppingCartIdWithUID(userId),
           prod.getProduct_id(),
           (quantity * -1));
     }
