@@ -43,7 +43,8 @@ public class RouterService {
     {
       switch (path) {
         case "/products":
-          new ProductScreen(this, getProductService(), getShoppingCartService(), getReviewService(), username)
+          new ProductScreen(
+                  this, getProductService(), getShoppingCartService(), getReviewService(), username)
               .start(scan);
           break;
         case "/reviews":
@@ -71,7 +72,7 @@ public class RouterService {
     return new ShoppingCartService(new ShoppingCartDAO());
   }
 
-  private ReviewService getReviewService(){
+  private ReviewService getReviewService() {
     return new ReviewService(new ReviewDAO());
   }
 

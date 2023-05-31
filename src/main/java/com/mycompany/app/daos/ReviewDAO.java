@@ -40,9 +40,11 @@ public class ReviewDAO implements CrudDAO<Review> {
     throw new UnsupportedOperationException("Unimplemented method 'findAll'");
   }
 
-  public void createReview(Review review){
-    try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-      String sql = "INSERT INTO review (review_id, username, product_id, rating, message) VALUES (?, ?,?,?,?)";
+  public void createReview(Review review) {
+    try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+      String sql =
+          "INSERT INTO review (review_id, username, product_id, rating, message) VALUES (?,"
+              + " ?,?,?,?)";
       PreparedStatement ps = conn.prepareStatement(sql);
       ps.setString(1, review.getReview_id());
       ps.setString(2, review.getUsername());

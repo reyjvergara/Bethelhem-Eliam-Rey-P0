@@ -21,7 +21,8 @@ public class ProductScreen implements IScreen {
   private final ReviewService reviewService;
   private String username;
 
-  public ProductScreen(RouterService rs, ProductService ps, ShoppingCartService scs, ReviewService reviewService) {
+  public ProductScreen(
+      RouterService rs, ProductService ps, ShoppingCartService scs, ReviewService reviewService) {
     this.router = rs;
     this.productService = ps;
     this.shoppingCartService = scs;
@@ -74,8 +75,8 @@ public class ProductScreen implements IScreen {
     System.out.println("1. Buy Product");
     System.out.println("2. Write Review");
     System.out.println("3. Read Reviews");
-    int choice =sc.nextInt();
-    switch(choice){
+    int choice = sc.nextInt();
+    switch (choice) {
       case 1:
         Product prod = prods.get(pchoice - 1);
         System.out.println("How many of the product do you wish to add? ");
@@ -83,7 +84,7 @@ public class ProductScreen implements IScreen {
         sc.nextLine();
         prod.setQuantity(choice);
         shoppingCartService.addProduct(prod, username);
-      break;
+        break;
       case 2:
         Review r = new Review();
         r.setReview_id(UUID.randomUUID().toString());
@@ -98,9 +99,10 @@ public class ProductScreen implements IScreen {
         reviewService.createReview(r);
         break;
       case 3:
-        List<Review> y= reviewService.getAllReviewsSameId(prods.get(pchoice).getProduct_id());
+        List<Review> y = reviewService.getAllReviewsSameId(prods.get(pchoice).getProduct_id());
         for (Review review : y) {
-          System.out.println(review.getUsername() + " " + review.getMessage()+ " "+ review.getRating());
+          System.out.println(
+              review.getUsername() + " " + review.getMessage() + " " + review.getRating());
         }
     }
   }

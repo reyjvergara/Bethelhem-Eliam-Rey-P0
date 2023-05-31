@@ -15,7 +15,7 @@ public class ReviewService {
     return reviewDAO.findAllReviewsSameProductId(id);
   }
 
-  public void createReview(Review r){
+  public void createReview(Review r) {
     reviewDAO.createReview(r);
   }
 }
