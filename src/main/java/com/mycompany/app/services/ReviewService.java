@@ -14,4 +14,8 @@ public class ReviewService {
   public List<Review> getAllReviewsSameId(String id) {
     return reviewDAO.findAllReviewsSameProductId(id);
   }
+
+  public void createReview(Review r) {
+    reviewDAO.createReview(r);
+  }
 }
