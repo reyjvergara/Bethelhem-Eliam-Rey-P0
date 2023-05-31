@@ -3,6 +3,7 @@ package com.mycompany.app.services;
 import java.util.Scanner;
 
 import com.mycompany.app.daos.ProductDAO;
+import com.mycompany.app.daos.ReviewDAO;
 import com.mycompany.app.daos.RoleDAO;
 import com.mycompany.app.daos.ShoppingCartDAO;
 import com.mycompany.app.daos.UserDAO;
@@ -42,7 +43,7 @@ public class RouterService {
     {
       switch (path) {
         case "/products":
-          new ProductScreen(this, getProductService(), getShoppingCartService(), username)
+          new ProductScreen(this, getProductService(), getShoppingCartService(), getReviewService(), username)
               .start(scan);
           break;
         case "/reviews":
@@ -68,6 +69,10 @@ public class RouterService {
 
   private ShoppingCartService getShoppingCartService() {
     return new ShoppingCartService(new ShoppingCartDAO());
+  }
+
+  private ReviewService getReviewService(){
+    return new ReviewService(new ReviewDAO());
   }
 
   private RoleService getRoleService() {
