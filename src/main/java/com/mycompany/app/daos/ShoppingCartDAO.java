@@ -12,7 +12,7 @@ import java.util.UUID;
 import com.mycompany.app.models.Product;
 import com.mycompany.app.utils.ConnectionFactory;
 
-public class ShoppingCartDAO{
+public class ShoppingCartDAO {
 
   public void addToCart(Product prod, int quantity, String username, String password) {
     // first check if prod has been added to cart
@@ -46,9 +46,9 @@ public class ShoppingCartDAO{
 
   public void delete(String cart_id) {
     // delete all items given a cart_id
-    try(Connection conn = ConnectionFactory.getInstance().getConnection()){
+    try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
       String sql = "delete from cart_items where cart_id = ?";
-      try(PreparedStatement ps = conn.prepareStatement(sql)){
+      try (PreparedStatement ps = conn.prepareStatement(sql)) {
         ps.setString(1, cart_id);
         ps.executeUpdate();
       }

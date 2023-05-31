@@ -14,10 +14,10 @@ public class RouterService {
   public void navigate(String path, Scanner scan) {
 
     switch (path) {
-        case "/home":
+      case "/home":
         new HomeScreen(this).start(scan);
         break;
-        case "/login":
+      case "/login":
         new LoginScreen(getUserService(), this).start(scan);
       case "/products":
         new ProductScreen(this, getProductService()).start(scan);
@@ -35,11 +35,11 @@ public class RouterService {
     return new ProductService(new ProductDAO());
   }
 
-  private UserService getUserService(){
+  private UserService getUserService() {
     return new UserService(new UserDAO(), getRoleService());
   }
 
-  private RoleService getRoleService(){
+  private RoleService getRoleService() {
     return new RoleService(new RoleDAO());
   }
 }

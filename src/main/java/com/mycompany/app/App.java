@@ -11,9 +11,10 @@ import com.mycompany.app.services.RouterService;
 
 public class App {
   private static final Logger logger = LogManager.getLogger(App.class);
+
   public static void main(String args[]) throws ClassNotFoundException, IOException, SQLException {
 
-  logger.info("------------------ START APPLICATION -----------------------------");
+    logger.info("------------------ START APPLICATION -----------------------------");
     Scanner sc = new Scanner(System.in);
 
     // Create a new RouterService with a Session
@@ -25,5 +26,5 @@ public class App {
     logger.info("------------------ END APPLICATION -----------------------------");
 
     sc.close();
-}
+  }
 }
