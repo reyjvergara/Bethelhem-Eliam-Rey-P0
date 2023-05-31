@@ -3,7 +3,6 @@ package com.mycompany.app.daos;
 import java.io.IOException;
 import java.sql.*;
 import java.util.List;
-import java.util.Optional;
 
 import com.mycompany.app.models.User;
 import com.mycompany.app.utils.ConnectionFactory;
@@ -59,7 +58,7 @@ public class UserDAO implements CrudDAO<User> {
     throw new UnsupportedOperationException("Unimplemented method 'findAll'");
   }
 
-  public Optional<User> findByUsername(String username) {
+  public User findByUsername(String username) {
     try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
       String sql = "SELECT * FROM users WHERE username = ?";
 
@@ -74,7 +73,7 @@ public class UserDAO implements CrudDAO<User> {
             user.setId(rs.getString("id"));
             user.setUsername(rs.getString("username"));
             user.setPassword(rs.getString("password"));
-            return Optional.of(user);
+            return user;
           }
         }
       }
@@ -87,6 +86,6 @@ public class UserDAO implements CrudDAO<User> {
       throw new RuntimeException("Unable to load JDBC driver", e);
     }
 
-    return Optional.empty();
+    return null;
   }
 }

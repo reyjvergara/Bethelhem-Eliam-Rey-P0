@@ -2,12 +2,14 @@ package com.mycompany.app.screens;
 
 import java.util.Scanner;
 
+import com.mycompany.app.services.RouterService;
 import com.mycompany.app.services.UserService;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class RegistrationScreen implements IScreen {
   private final UserService userService;
+  private final RouterService routerService;
 
   @Override
   public void start(Scanner scan) {
