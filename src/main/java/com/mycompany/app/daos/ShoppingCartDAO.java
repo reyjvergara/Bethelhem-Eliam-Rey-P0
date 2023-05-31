@@ -62,12 +62,15 @@ public class ShoppingCartDAO{
   }
 
   public void deleteProduct(Product prod, int quantity, String username, String password) {
-    int old_quantity = getQuantitySC(getShoppingCartIdWithUID(findbyLoginHelperUID(username, password)), prod.getProduct_id());
-    if(old_quantity <= quantity){
+    int old_quantity =
+        getQuantitySC(
+            getShoppingCartIdWithUID(findbyLoginHelperUID(username, password)),
+            prod.getProduct_id());
+    if (old_quantity <= quantity) {
       // we want to remove this Product from the cart_items table
-      try(Connection conn = ConnectionFactory.getInstance().getConnection()){
+      try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
         String sql = "DELETE FROM cart_items where cart_id = ? AND product_id = ?";
-        try(PreparedStatement ps = conn.prepareStatement(sql)){
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
           ps.setString(1, getShoppingCartIdWithUID(findbyLoginHelperUID(username, password)));
           ps.setString(2, prod.getProduct_id());
           ps.executeUpdate();
@@ -79,9 +82,12 @@ public class ShoppingCartDAO{
       } catch (ClassNotFoundException e) {
         throw new RuntimeException("Unable to load JDBC driver", e);
       }
-    }else{
+    } else {
       // just update the value of Product's quantity in cart_items
-      updateQuantity(getShoppingCartIdWithUID(findbyLoginHelperUID(username, password)), prod.getProduct_id(), (quantity * -1));
+      updateQuantity(
+          getShoppingCartIdWithUID(findbyLoginHelperUID(username, password)),
+          prod.getProduct_id(),
+          (quantity * -1));
     }
   }
 
@@ -207,43 +213,44 @@ public class ShoppingCartDAO{
       throw new RuntimeException("Unable to load JDBC driver", e);
     }
   }
-/*
-  public ShoppingCart findByLoginHelperSCID(String username, String password) {
-    if (findbyLoginHelperUID(username, password) == null) {
-      return new ShoppingCart();
-    } else {
-      ShoppingCart sc = new ShoppingCart();
-      // getting the shopping_cart_id given the UID
-      try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-        String sql = "SELECT * FROM shopping_cart WHERE user_id = ? ";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-          ps.setString(1, findbyLoginHelperUID(username, password));
-          try (ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-              Product p = new Product();
-              p.setProduct_id(rs.getString("product_id"));
-              p.setName(rs.getString("name"));
-              p.setPrice(rs.getDouble("price"));
-              p.setDescription(rs.getString("description"));
-              p.setRating(rs.getInt("rating"));
-              p.setQuantity(rs.getInt("quantity"));
-              p.setCategory1(rs.getString("category1"));
-              p.setCategory2(rs.getString("category2"));
-              sc.addToCartUponLogin(p);
+
+  /*
+    public ShoppingCart findByLoginHelperSCID(String username, String password) {
+      if (findbyLoginHelperUID(username, password) == null) {
+        return new ShoppingCart();
+      } else {
+        ShoppingCart sc = new ShoppingCart();
+        // getting the shopping_cart_id given the UID
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+          String sql = "SELECT * FROM shopping_cart WHERE user_id = ? ";
+          try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, findbyLoginHelperUID(username, password));
+            try (ResultSet rs = ps.executeQuery()) {
+              while (rs.next()) {
+                Product p = new Product();
+                p.setProduct_id(rs.getString("product_id"));
+                p.setName(rs.getString("name"));
+                p.setPrice(rs.getDouble("price"));
+                p.setDescription(rs.getString("description"));
+                p.setRating(rs.getInt("rating"));
+                p.setQuantity(rs.getInt("quantity"));
+                p.setCategory1(rs.getString("category1"));
+                p.setCategory2(rs.getString("category2"));
+                sc.addToCartUponLogin(p);
+              }
             }
           }
+        } catch (SQLException e) {
+          throw new RuntimeException("Unable to connect to DB", e);
+        } catch (IOException e) {
+          throw new RuntimeException("Cannot find application.properties", e);
+        } catch (ClassNotFoundException e) {
+          throw new RuntimeException("Unable to load JDBC driver", e);
         }
-      } catch (SQLException e) {
-        throw new RuntimeException("Unable to connect to DB", e);
-      } catch (IOException e) {
-        throw new RuntimeException("Cannot find application.properties", e);
-      } catch (ClassNotFoundException e) {
-        throw new RuntimeException("Unable to load JDBC driver", e);
+        return sc;
       }
-      return sc;
     }
-  }
-*/
+  */
   /**
    * Gets the shopping cart id given the user id If the user_id cannot get a cart_id We call a
    * method to make a new one
