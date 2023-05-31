@@ -17,8 +17,7 @@ public class ShoppingCartDAO {
   public void addToCart(Product prod, int quantity, String userId, String cartId) {
     // first check if prod has been added to cart
     if (checkIfProdExists(cartId, prod)) {
-      updateQuantity(
-          cartId, prod.getProduct_id(), quantity);
+      updateQuantity(cartId, prod.getProduct_id(), quantity);
     } else {
       // add to cart
       addNewToCart(prod, quantity, cartId);
@@ -66,9 +65,7 @@ public class ShoppingCartDAO {
   }
 
   public void deleteProduct(Product prod, int quantity, String userId, String cartId) {
-    int old_quantity =
-        getQuantitySC(
-            cartId, prod.getProduct_id());
+    int old_quantity = getQuantitySC(cartId, prod.getProduct_id());
     if (old_quantity <= quantity) {
       // we want to remove this Product from the cart_items table
       try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
@@ -87,10 +84,7 @@ public class ShoppingCartDAO {
       }
     } else {
       // just update the value of Product's quantity in cart_items
-      updateQuantity(
-          getShoppingCartIdWithUID(userId),
-          prod.getProduct_id(),
-          (quantity * -1));
+      updateQuantity(getShoppingCartIdWithUID(userId), prod.getProduct_id(), (quantity * -1));
     }
   }
 

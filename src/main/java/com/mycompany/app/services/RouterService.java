@@ -16,7 +16,7 @@ public class RouterService {
   public void navigate(String path, Scanner scan) {
     exit:
     {
-      while(true){
+      while (true) {
         switch (path) {
           case "/home":
             new HomeScreen(this).start(scan);
@@ -44,14 +44,14 @@ public class RouterService {
         case "/products":
           new ProductScreen(this, getProductService(), getShoppingCartService(), username)
               .start(scan);
-              break;
+          break;
         case "/reviews":
-        break;
+          break;
         case "/shoppingcart":
           new ShoppingCartScreen(this, getShoppingCartService(), username).start(scan);
           break exit;
         case "/checkout":
-        break;
+          break;
         default:
           break;
       }

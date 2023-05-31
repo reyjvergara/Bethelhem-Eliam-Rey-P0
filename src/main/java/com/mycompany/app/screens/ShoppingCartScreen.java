@@ -30,9 +30,9 @@ public class ShoppingCartScreen implements IScreen {
         switch (choice) {
           case 1:
             List<Product> sc = getAllShoppingCart(username);
-            if(sc.isEmpty()){
+            if (sc.isEmpty()) {
               System.out.println("Cart is empty");
-            }else{
+            } else {
               for (Product p : sc) {
                 System.out.println(p.getName() + " " + p.getPrice() + " " + p.getQuantity());
               }
@@ -43,17 +43,18 @@ public class ShoppingCartScreen implements IScreen {
             List<Product> scd = getAllShoppingCart(username);
             int i = 1;
             for (Product p : scd) {
-              System.out.println( i + ". " + p.getName() + " " + p.getPrice() + " " + p.getQuantity());
+              System.out.println(
+                  i + ". " + p.getName() + " " + p.getPrice() + " " + p.getQuantity());
               i++;
             }
             System.out.println("Enter the number of the product you wish to delete");
             Product prod = productToDelete(scd, scan);
             deleteFromShoppingCart(prod, username, scan);
             break;
-            case 3:
-              break exit;
-            default:
-              break;
+          case 3:
+            break exit;
+          default:
+            break;
         }
       }
     }
@@ -63,13 +64,13 @@ public class ShoppingCartScreen implements IScreen {
     return shoppingCartService.getAllShoppingCart(username);
   }
 
-  public Product productToDelete(List<Product> prods, Scanner scan){
+  public Product productToDelete(List<Product> prods, Scanner scan) {
     int choice = scan.nextInt();
     scan.nextLine();
     return prods.get(choice - 1);
   }
 
-  public void deleteFromShoppingCart(Product p, String username, Scanner scan){
+  public void deleteFromShoppingCart(Product p, String username, Scanner scan) {
     System.out.println("How many to delete? ");
     int quantity = scan.nextInt();
     scan.nextLine();
