@@ -16,22 +16,20 @@ public class ShoppingCartDAO {
 
   public void addToCart(Product prod, int quantity, String username) {
     // first check if prod has been added to cart
-    if (checkIfProdExists(
-        getShoppingCartIdWithUID(findbyLoginHelperUID(username)), prod)) {
+    if (checkIfProdExists(getShoppingCartIdWithUID(findbyLoginHelperUID(username)), prod)) {
       updateQuantity(
-          getShoppingCartIdWithUID(findbyLoginHelperUID(username)),
-          prod.getProduct_id(),
-          quantity);
+          getShoppingCartIdWithUID(findbyLoginHelperUID(username)), prod.getProduct_id(), quantity);
     } else {
       // add to cart
       addNewToCart(prod, quantity, username);
     }
   }
 
-  public void addNewToCart(Product prod, int quantity, String username){
+  public void addNewToCart(Product prod, int quantity, String username) {
     try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
       String sql =
-          "insert into cart_items (id, quantity, price, cart_id, product_id) values (?, ?, ?, ?, ?)";
+          "insert into cart_items (id, quantity, price, cart_id, product_id) values (?, ?, ?, ?,"
+              + " ?)";
       try (PreparedStatement ps = conn.prepareStatement(sql)) {
         ps.setString(1, UUID.randomUUID().toString());
         ps.setInt(2, quantity);
@@ -70,8 +68,7 @@ public class ShoppingCartDAO {
   public void deleteProduct(Product prod, int quantity, String username) {
     int old_quantity =
         getQuantitySC(
-            getShoppingCartIdWithUID(findbyLoginHelperUID(username)),
-            prod.getProduct_id());
+            getShoppingCartIdWithUID(findbyLoginHelperUID(username)), prod.getProduct_id());
     if (old_quantity <= quantity) {
       // we want to remove this Product from the cart_items table
       try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
@@ -218,7 +215,6 @@ public class ShoppingCartDAO {
       throw new RuntimeException("Unable to load JDBC driver", e);
     }
   }
-
 
   /**
    * Gets the shopping cart id given the user id If the user_id cannot get a cart_id We call a

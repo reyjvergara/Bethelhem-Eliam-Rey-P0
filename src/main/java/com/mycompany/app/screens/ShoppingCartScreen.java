@@ -8,6 +8,7 @@ import com.mycompany.app.services.RouterService;
 import com.mycompany.app.services.ShoppingCartService;
 
 import lombok.AllArgsConstructor;
+
 @AllArgsConstructor
 public class ShoppingCartScreen implements IScreen {
   private final RouterService router;
@@ -18,30 +19,31 @@ public class ShoppingCartScreen implements IScreen {
   public void start(Scanner scan) {
     exit:
     {
-      while(true){
+      while (true) {
         clearScreen();
         System.out.println("Welcome to your shopping cart");
         System.out.println("1. View Shopping cart");
         System.out.println("2. Delete from Shopping Cart");
         int choice = scan.nextInt();
         scan.nextLine();
-        switch(choice){
+        switch (choice) {
           case 1:
-          List<Product> sc = getAllShoppingCart(username);
+            List<Product> sc = getAllShoppingCart(username);
             for (Product p : sc) {
               System.out.println(p.getName() + " " + p.getPrice() + " " + p.getQuantity());
             }
           case 2:
-          // delete menu
+            // delete menu
         }
       }
     }
   }
 
-  public List<Product> getAllShoppingCart(String username){
+  public List<Product> getAllShoppingCart(String username) {
     return shoppingCartService.getAllShoppingCart(username);
   }
-  private void clearScreen(){
+
+  private void clearScreen() {
     System.out.flush();
   }
 }

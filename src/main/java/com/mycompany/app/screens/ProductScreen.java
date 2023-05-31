@@ -17,11 +17,12 @@ public class ProductScreen implements IScreen {
   private final ShoppingCartService shoppingCartService;
   private String username;
 
-  public ProductScreen(RouterService rs, ProductService ps, ShoppingCartService scs){
+  public ProductScreen(RouterService rs, ProductService ps, ShoppingCartService scs) {
     this.router = rs;
     this.productService = ps;
     this.shoppingCartService = scs;
   }
+
   @Override
   public void start(Scanner scan) {
     String input = "";
@@ -37,12 +38,12 @@ public class ProductScreen implements IScreen {
         System.out.println("4. Logout");
         int choice = scan.nextInt();
         scan.nextLine();
-        switch(choice){
+        switch (choice) {
           case 1:
             List<Product> x = displayAllProducts(scan);
             int i = 1;
             for (Product product : x) {
-              System.out.println( i + ". " +  product.getName() + " " + product.getPrice());
+              System.out.println(i + ". " + product.getName() + " " + product.getPrice());
               i++;
             }
             System.out.println("Enter the number of the product you wish to purchase: ");
@@ -58,12 +59,11 @@ public class ProductScreen implements IScreen {
           default:
             break;
         }
-        
       }
     }
   }
 
-  public void productChoice(List<Product> prods, Scanner sc){
+  public void productChoice(List<Product> prods, Scanner sc) {
     int choice = sc.nextInt();
     sc.nextLine();
     Product prod = prods.get(choice - 1);
@@ -72,27 +72,24 @@ public class ProductScreen implements IScreen {
     sc.nextLine();
     prod.setQuantity(choice);
     shoppingCartService.addProduct(prod, username);
-    //shoppingCartService.getAllShoppingCart(username);
+    // shoppingCartService.getAllShoppingCart(username);
   }
 
-  public void addToCart(Product prod, int quantity){
+  public void addToCart(Product prod, int quantity) {}
 
-  }
   private void clearScreen() {
     System.out.flush();
   }
 
-  public void displayReviews(String product_id){
+  public void displayReviews(String product_id) {}
 
-  }
-
-  public void viewOrderHistory(String username){
+  public void viewOrderHistory(String username) {
     // return list of your order history
 
   }
 
-  public String chooseCategory(Scanner sc){
-    while(true){
+  public String chooseCategory(Scanner sc) {
+    while (true) {
       System.out.println("Choose your category");
       System.out.println("1. Electronics");
       System.out.println("2. Office");
@@ -101,7 +98,7 @@ public class ProductScreen implements IScreen {
       System.out.println("4. Food");
       int choice = sc.nextInt();
       sc.nextLine();
-      switch(choice){
+      switch (choice) {
         case 1:
           return "Electronics";
         case 2:
@@ -118,11 +115,11 @@ public class ProductScreen implements IScreen {
     }
   }
 
-  public List<Product> displayProducts(String category){
+  public List<Product> displayProducts(String category) {
     return productService.getAllCategory(category);
   }
 
-  public List<Product> displayAllProducts(Scanner scan){
+  public List<Product> displayAllProducts(Scanner scan) {
     List<Product> prod = productService.getAllProducts();
     return prod;
   }

@@ -63,7 +63,7 @@ public class ProductDAO implements CrudDAO<Product> {
     return allProducts;
   }
 
-  public List<Product> findProducts(String category){
+  public List<Product> findProducts(String category) {
     List<Product> allProducts = new ArrayList<>();
     try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
       String sql = "Select * from products where category1 = ? or category2 = ?";

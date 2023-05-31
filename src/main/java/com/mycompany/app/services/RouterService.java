@@ -31,10 +31,11 @@ public class RouterService {
     }
   }
 
-  public void navigate(String path, Scanner scan, String username){
+  public void navigate(String path, Scanner scan, String username) {
     switch (path) {
       case "/products":
-        new ProductScreen(this, getProductService(), getShoppingCartService(), username).start(scan);
+        new ProductScreen(this, getProductService(), getShoppingCartService(), username)
+            .start(scan);
       case "/reviews":
       case "/shoppingcart":
         new ShoppingCartScreen(this, getShoppingCartService(), username).start(scan);
@@ -52,8 +53,7 @@ public class RouterService {
     return new UserService(new UserDAO(), getRoleService());
   }
 
-
-  private ShoppingCartService getShoppingCartService(){
+  private ShoppingCartService getShoppingCartService() {
     return new ShoppingCartService(new ShoppingCartDAO());
   }
 
