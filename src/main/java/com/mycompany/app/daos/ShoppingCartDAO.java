@@ -27,7 +27,7 @@ public class ShoppingCartDAO {
   public void addNewToCart(Product prod, int quantity, String cartId) {
     try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
       String sql =
-          "insert into ecommerce.cart_items (id, quantity, price, cart_id, product_id) values (?,"
+          "insert into cart_items (id, quantity, price, cart_id, product_id) values (?,"
               + " ?, ?, ?, ?)";
       try (PreparedStatement ps = conn.prepareStatement(sql)) {
         ps.setString(1, UUID.randomUUID().toString());
@@ -36,11 +36,10 @@ public class ShoppingCartDAO {
         ps.setString(4, cartId);
         ps.setString(5, prod.getProduct_id());
         System.out.println(ps.toString());
-        ps.execute();
-        conn.commit();
+        ps.executeUpdate();
       }
     } catch (SQLException e) {
-      throw new RuntimeException("Unable to connect to DB cart_items \n", e);
+      throw new RuntimeException("Unable to connect to DB cart_items \n" + e);
     } catch (IOException e) {
       throw new RuntimeException("Cannot find application.properties", e);
     } catch (ClassNotFoundException e) {
