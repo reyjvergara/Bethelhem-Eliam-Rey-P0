@@ -39,7 +39,7 @@ public class ShoppingCartDAO {
         ps.executeUpdate();
       }
     } catch (SQLException e) {
-      throw new RuntimeException("Unable to connect to DB cart_items \n"+ e);
+      throw new RuntimeException("Unable to connect to DB cart_items \n" + e);
     } catch (IOException e) {
       throw new RuntimeException("Cannot find application.properties", e);
     } catch (ClassNotFoundException e) {
