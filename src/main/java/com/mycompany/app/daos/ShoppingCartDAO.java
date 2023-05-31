@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.mycompany.app.models.Product;
-import com.mycompany.app.models.ShoppingCart;
+//import com.mycompany.app.models.ShoppingCart;
 import com.mycompany.app.utils.ConnectionFactory;
 
 public class ShoppingCartDAO implements CrudDAO<Product> {
@@ -66,7 +66,30 @@ public class ShoppingCartDAO implements CrudDAO<Product> {
     // delete all items given a cart_id
   }
 
-  public void deleteProduct(Product prod, int quantity, String username, String password) {}
+  public void deleteProduct(Product prod, int quantity, String username, String password) {
+    int old_quantity = getQuantitySC(getShoppingCartIdWithUID(findbyLoginHelperUID(username, password)), prod.getProduct_id());
+    if(old_quantity <= quantity){
+      // we want to remove this Product from the cart_items table
+      try(Connection conn = ConnectionFactory.getInstance().getConnection()){
+        String sql = "DELETE FROM cart_items where cart_id = ? AND product_id = ?";
+        try(PreparedStatement ps = conn.prepareStatement(sql)){
+          ps.setString(1, getShoppingCartIdWithUID(findbyLoginHelperUID(username, password)));
+          ps.setString(2, prod.getProduct_id());
+          ps.executeUpdate();
+        }
+      } catch (SQLException e) {
+        throw new RuntimeException("Unable to connect to DB", e);
+      } catch (IOException e) {
+        throw new RuntimeException("Cannot find application.properties", e);
+      } catch (ClassNotFoundException e) {
+        throw new RuntimeException("Unable to load JDBC driver", e);
+      }
+    }else{
+      // just update the value of Product's quantity in cart_items
+      updateQuantity(getShoppingCartIdWithUID(findbyLoginHelperUID(username, password)), prod.getProduct_id(), (quantity * -1));
+    }
+  }
+
 
   @Override
   public Product findById(String id) {
@@ -202,7 +225,7 @@ public class ShoppingCartDAO implements CrudDAO<Product> {
       throw new RuntimeException("Unable to load JDBC driver", e);
     }
   }
-
+/*
   public ShoppingCart findByLoginHelperSCID(String username, String password) {
     if (findbyLoginHelperUID(username, password) == null) {
       return new ShoppingCart();
@@ -238,7 +261,7 @@ public class ShoppingCartDAO implements CrudDAO<Product> {
       return sc;
     }
   }
-
+*/
   /**
    * Gets the shopping cart id given the user id If the user_id cannot get a cart_id We call a
    * method to make a new one
