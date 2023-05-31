@@ -15,4 +15,8 @@ public class ProductService {
   public List<Product> getAllProducts() {
     return productDAO.findAll();
   }
+
+  public List<Product> getAllCategory(String category) {
+    return productDAO.findProducts(category);
+  }
 }
