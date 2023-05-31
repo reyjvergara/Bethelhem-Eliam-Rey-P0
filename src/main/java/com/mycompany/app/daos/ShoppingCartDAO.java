@@ -14,33 +14,39 @@ import com.mycompany.app.utils.ConnectionFactory;
 
 public class ShoppingCartDAO {
 
-  public void addToCart(Product prod, int quantity, String username, String password) {
+  public void addToCart(Product prod, int quantity, String username) {
     // first check if prod has been added to cart
     if (checkIfProdExists(
-        getShoppingCartIdWithUID(findbyLoginHelperUID(username, password)), prod)) {
+        getShoppingCartIdWithUID(findbyLoginHelperUID(username)), prod)) {
       updateQuantity(
-          getShoppingCartIdWithUID(findbyLoginHelperUID(username, password)),
+          getShoppingCartIdWithUID(findbyLoginHelperUID(username)),
           prod.getProduct_id(),
           quantity);
     } else {
       // add to cart
-      try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-        String sql =
-            "insert into cart_items (id, quantity, price, cart_id, product_id) values (?,?,?,?,?)";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-          ps.setString(1, UUID.randomUUID().toString());
-          ps.setInt(2, quantity);
-          ps.setDouble(3, prod.getPrice());
-          ps.setString(4, getShoppingCartIdWithUID(findbyLoginHelperUID(username, password)));
-          ps.setString(5, prod.getProduct_id());
-        }
-      } catch (SQLException e) {
-        throw new RuntimeException("Unable to connect to DB", e);
-      } catch (IOException e) {
-        throw new RuntimeException("Cannot find application.properties", e);
-      } catch (ClassNotFoundException e) {
-        throw new RuntimeException("Unable to load JDBC driver", e);
+      addNewToCart(prod, quantity, username);
+    }
+  }
+
+  public void addNewToCart(Product prod, int quantity, String username){
+    try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+      String sql =
+          "insert into cart_items (id, quantity, price, cart_id, product_id) values (?, ?, ?, ?, ?)";
+      try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, UUID.randomUUID().toString());
+        ps.setInt(2, quantity);
+        ps.setDouble(3, prod.getPrice());
+        ps.setString(4, getShoppingCartIdWithUID(findbyLoginHelperUID(username)));
+        ps.setString(5, prod.getProduct_id());
+        System.out.println(ps.toString());
+        ps.executeUpdate();
       }
+    } catch (SQLException e) {
+      throw new RuntimeException("Unable to connect to DB cart_items", e);
+    } catch (IOException e) {
+      throw new RuntimeException("Cannot find application.properties", e);
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException("Unable to load JDBC driver", e);
     }
   }
 
@@ -61,17 +67,17 @@ public class ShoppingCartDAO {
     }
   }
 
-  public void deleteProduct(Product prod, int quantity, String username, String password) {
+  public void deleteProduct(Product prod, int quantity, String username) {
     int old_quantity =
         getQuantitySC(
-            getShoppingCartIdWithUID(findbyLoginHelperUID(username, password)),
+            getShoppingCartIdWithUID(findbyLoginHelperUID(username)),
             prod.getProduct_id());
     if (old_quantity <= quantity) {
       // we want to remove this Product from the cart_items table
       try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
         String sql = "DELETE FROM cart_items where cart_id = ? AND product_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-          ps.setString(1, getShoppingCartIdWithUID(findbyLoginHelperUID(username, password)));
+          ps.setString(1, getShoppingCartIdWithUID(findbyLoginHelperUID(username)));
           ps.setString(2, prod.getProduct_id());
           ps.executeUpdate();
         }
@@ -85,7 +91,7 @@ public class ShoppingCartDAO {
     } else {
       // just update the value of Product's quantity in cart_items
       updateQuantity(
-          getShoppingCartIdWithUID(findbyLoginHelperUID(username, password)),
+          getShoppingCartIdWithUID(findbyLoginHelperUID(username)),
           prod.getProduct_id(),
           (quantity * -1));
     }
@@ -107,7 +113,7 @@ public class ShoppingCartDAO {
         }
       }
     } catch (SQLException e) {
-      throw new RuntimeException("Unable to connect to DB", e);
+      throw new RuntimeException("Unable to connect to DB test", e);
     } catch (IOException e) {
       throw new RuntimeException("Cannot find application.properties", e);
     } catch (ClassNotFoundException e) {
@@ -130,14 +136,13 @@ public class ShoppingCartDAO {
             prod.setProduct_id(rs.getString("product_id"));
             prod.setName(rs.getString("name"));
             prod.setDescription(rs.getString("description"));
-            prod.setCategory1(rs.getString("category1"));
-            prod.setCategory2(rs.getString("category2"));
+            prod.setCategory(rs.getString("category"));
             return prod;
           }
         }
       }
     } catch (SQLException e) {
-      throw new RuntimeException("Unable to connect to DB", e);
+      throw new RuntimeException("Unable to connect to DB prod", e);
     } catch (IOException e) {
       throw new RuntimeException("Cannot find application.properties", e);
     } catch (ClassNotFoundException e) {
@@ -214,43 +219,7 @@ public class ShoppingCartDAO {
     }
   }
 
-  /*
-    public ShoppingCart findByLoginHelperSCID(String username, String password) {
-      if (findbyLoginHelperUID(username, password) == null) {
-        return new ShoppingCart();
-      } else {
-        ShoppingCart sc = new ShoppingCart();
-        // getting the shopping_cart_id given the UID
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-          String sql = "SELECT * FROM shopping_cart WHERE user_id = ? ";
-          try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, findbyLoginHelperUID(username, password));
-            try (ResultSet rs = ps.executeQuery()) {
-              while (rs.next()) {
-                Product p = new Product();
-                p.setProduct_id(rs.getString("product_id"));
-                p.setName(rs.getString("name"));
-                p.setPrice(rs.getDouble("price"));
-                p.setDescription(rs.getString("description"));
-                p.setRating(rs.getInt("rating"));
-                p.setQuantity(rs.getInt("quantity"));
-                p.setCategory1(rs.getString("category1"));
-                p.setCategory2(rs.getString("category2"));
-                sc.addToCartUponLogin(p);
-              }
-            }
-          }
-        } catch (SQLException e) {
-          throw new RuntimeException("Unable to connect to DB", e);
-        } catch (IOException e) {
-          throw new RuntimeException("Cannot find application.properties", e);
-        } catch (ClassNotFoundException e) {
-          throw new RuntimeException("Unable to load JDBC driver", e);
-        }
-        return sc;
-      }
-    }
-  */
+
   /**
    * Gets the shopping cart id given the user id If the user_id cannot get a cart_id We call a
    * method to make a new one
@@ -268,7 +237,7 @@ public class ShoppingCartDAO {
         }
       }
     } catch (SQLException e) {
-      throw new RuntimeException("Unable to connect to DB", e);
+      throw new RuntimeException("Unable to connect to DB shopping_cart select", e);
     } catch (IOException e) {
       throw new RuntimeException("Cannot find application.properties", e);
     } catch (ClassNotFoundException e) {
@@ -292,7 +261,7 @@ public class ShoppingCartDAO {
         return cart_id;
       }
     } catch (SQLException e) {
-      throw new RuntimeException("Unable to connect to the database", e);
+      throw new RuntimeException("Unable to connect to the database shoppingcart table", e);
     } catch (IOException e) {
       throw new RuntimeException("Cannot find application.properties", e);
     } catch (ClassNotFoundException e) {
@@ -302,16 +271,14 @@ public class ShoppingCartDAO {
 
   /**
    * @param username
-   * @param password
-   * @return the user_id of a user given correct username and password
+   * @return the user_id of a user given correct username
    */
-  public String findbyLoginHelperUID(String username, String password) {
+  public String findbyLoginHelperUID(String username) {
     try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-      String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+      String sql = "SELECT * FROM users WHERE username = ?";
 
       try (PreparedStatement ps = conn.prepareStatement(sql)) {
         ps.setString(1, username);
-        ps.setString(2, password);
         try (ResultSet rs = ps.executeQuery()) {
           if (rs.next()) {
             return (rs.getString("id"));
@@ -319,7 +286,7 @@ public class ShoppingCartDAO {
         }
       }
     } catch (SQLException e) {
-      throw new RuntimeException("Unable to connect to the database", e);
+      throw new RuntimeException("Unable to connect to the database uid", e);
     } catch (IOException e) {
       throw new RuntimeException("Cannot find application.properties", e);
     } catch (ClassNotFoundException e) {
