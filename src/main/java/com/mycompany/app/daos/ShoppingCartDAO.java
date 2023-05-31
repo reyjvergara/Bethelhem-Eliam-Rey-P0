@@ -27,7 +27,8 @@ public class ShoppingCartDAO {
   public void addNewToCart(Product prod, int quantity, String cartId) {
     try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
       String sql =
-          "insert into ecommerce.cart_items (id, quantity, price, cart_id, product_id) values (?, ?, ?, ?, ?)";
+          "insert into ecommerce.cart_items (id, quantity, price, cart_id, product_id) values (?,"
+              + " ?, ?, ?, ?)";
       try (PreparedStatement ps = conn.prepareStatement(sql)) {
         ps.setString(1, UUID.randomUUID().toString());
         ps.setInt(2, quantity);

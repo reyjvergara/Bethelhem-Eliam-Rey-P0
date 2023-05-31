@@ -15,7 +15,8 @@ import lombok.ToString;
 public class ShoppingCart {
   public List<Product> shop_cart;
   public String uuid;
-  ShoppingCart(){
+
+  ShoppingCart() {
     this.uuid = UUID.randomUUID().toString();
   }
   /** Initializes the ShoppingCart class with an empty ArrayList when created */
