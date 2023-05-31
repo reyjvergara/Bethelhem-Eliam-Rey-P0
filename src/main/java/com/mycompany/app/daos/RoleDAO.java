@@ -50,7 +50,7 @@ public class RoleDAO implements CrudDAO<Role> {
         try (ResultSet rs = ps.executeQuery()) {
           if (rs.next()) {
             Role role = new Role();
-            role.setId(rs.getString("id"));
+            role.setId(rs.getString("role_id"));
             role.setName(rs.getString("name"));
             return Optional.of(role);
           }
@@ -58,7 +58,7 @@ public class RoleDAO implements CrudDAO<Role> {
       }
 
     } catch (SQLException e) {
-      throw new RuntimeException("Unable to connect to db");
+      throw new RuntimeException("Unable to connect to db roles");
     } catch (IOException e) {
       throw new RuntimeException("Cannot find application.properties");
     } catch (ClassNotFoundException e) {

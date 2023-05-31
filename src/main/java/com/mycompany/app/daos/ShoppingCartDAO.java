@@ -10,25 +10,9 @@ import java.util.List;
 import java.util.UUID;
 
 import com.mycompany.app.models.Product;
-//import com.mycompany.app.models.ShoppingCart;
 import com.mycompany.app.utils.ConnectionFactory;
 
-public class ShoppingCartDAO implements CrudDAO<Product> {
-
-  @Override
-  public void save(Product prod) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'save'");
-  }
-
-  @Override
-  public void update(String id) {
-    // Update will modify the items in the list whenever one item needs to be changed
-    // Needs to find an item first, then will change quantity if found in list. If quantity falls
-    // below 1, Product is removed from list
-
-    throw new UnsupportedOperationException("Unimplemented method 'update'");
-  }
+public class ShoppingCartDAO{
 
   public void addToCart(Product prod, int quantity, String username, String password) {
     // first check if prod has been added to cart
@@ -60,10 +44,21 @@ public class ShoppingCartDAO implements CrudDAO<Product> {
     }
   }
 
-  @Override
-  public void delete(String id) {
-    // TODO Auto-generated method stub
+  public void delete(String cart_id) {
     // delete all items given a cart_id
+    try(Connection conn = ConnectionFactory.getInstance().getConnection()){
+      String sql = "delete from cart_items where cart_id = ?";
+      try(PreparedStatement ps = conn.prepareStatement(sql)){
+        ps.setString(1, cart_id);
+        ps.executeUpdate();
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException("Unable to connect to DB", e);
+    } catch (IOException e) {
+      throw new RuntimeException("Cannot find application.properties", e);
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException("Unable to load JDBC driver", e);
+    }
   }
 
   public void deleteProduct(Product prod, int quantity, String username, String password) {
@@ -90,13 +85,6 @@ public class ShoppingCartDAO implements CrudDAO<Product> {
     }
   }
 
-
-  @Override
-  public Product findById(String id) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'findById'");
-  }
-
   public List<Product> findAllWithId(String sc_id) {
     List<Product> shopList = new ArrayList<>();
     try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
@@ -120,12 +108,6 @@ public class ShoppingCartDAO implements CrudDAO<Product> {
       throw new RuntimeException("Unable to load JDBC driver", e);
     }
     return shopList;
-  }
-
-  @Override
-  public List<Product> findAll() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'findAll'");
   }
 
   /* --------------------Helper Methods-------------------------------- */
