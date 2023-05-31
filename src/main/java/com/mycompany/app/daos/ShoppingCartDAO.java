@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -65,12 +66,40 @@ public class ShoppingCartDAO implements CrudDAO<Product> {
     // delete all items given a cart_id
   }
 
+  public void deleteProduct(Product prod, int quantity, String username, String password){
+    
+  }
+
   @Override
   public Product findById(String id) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'findById'");
   }
 
+  public List<Product> findAllWithId(String sc_id){
+    List<Product> shopList = new ArrayList<>();
+    try(Connection conn = ConnectionFactory.getInstance().getConnection()){
+      String sql = "SELECT * FROM cart_items WHERE cart_id = ?";
+      try(PreparedStatement ps = conn.prepareStatement(sql)){
+        ps.setString(1, sc_id);
+        try(ResultSet rs = ps.executeQuery()){
+          while(rs.next()){
+            Product prod = new Product(getProductWithId(rs.getString("product_id")));
+            prod.setPrice(rs.getDouble("price"));
+            prod.setQuantity(rs.getInt("quantity"));
+            shopList.add(prod);
+          }
+        }
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException("Unable to connect to DB", e);
+    } catch (IOException e) {
+      throw new RuntimeException("Cannot find application.properties", e);
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException("Unable to load JDBC driver", e);
+    }
+    return shopList;
+  }
   @Override
   public List<Product> findAll() {
     // TODO Auto-generated method stub
@@ -80,8 +109,35 @@ public class ShoppingCartDAO implements CrudDAO<Product> {
   /* --------------------Helper Methods-------------------------------- */
   /* ------------------------------------------------------------------ */
 
+  public Product getProductWithId(String product_id){
+    try(Connection conn = ConnectionFactory.getInstance().getConnection()){
+      String sql = "SELECT * FROM products where product_id = ?";
+      try(PreparedStatement ps = conn.prepareStatement(sql)){
+        ps.setString(1, product_id);
+        try(ResultSet rs = ps.executeQuery()){
+          if(rs.next()){
+            Product prod = new Product();
+            prod.setProduct_id(rs.getString("product_id"));
+            prod.setName(rs.getString("name"));
+            prod.setDescription(rs.getString("description"));
+            prod.setCategory1(rs.getString("category1"));
+            prod.setCategory2(rs.getString("category2"));
+            return prod;
+          }
+        }
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException("Unable to connect to DB", e);
+    } catch (IOException e) {
+      throw new RuntimeException("Cannot find application.properties", e);
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException("Unable to load JDBC driver", e);
+    }
+    return new Product();
+  }
+
   public void updateQuantity(String cart_id, String product_id, int quantity) {
-    int old_quantity = getQuantity(cart_id, product_id);
+    int old_quantity = getQuantitySC(cart_id, product_id);
     try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
       String sql = "Update cart_items set quantity = ? where cart_id = ? and product_id = ?";
       try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -99,7 +155,7 @@ public class ShoppingCartDAO implements CrudDAO<Product> {
     }
   }
 
-  public int getQuantity(String cart_id, String product_id) {
+  public int getQuantitySC(String cart_id, String product_id) {
     try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
       String sql = "SELECT * FROM cart_items where cart_id=? AND product_id =?";
       try (PreparedStatement ps = conn.prepareStatement(sql)) {
