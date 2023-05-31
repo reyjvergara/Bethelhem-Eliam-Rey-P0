@@ -66,9 +66,7 @@ public class ShoppingCartDAO implements CrudDAO<Product> {
     // delete all items given a cart_id
   }
 
-  public void deleteProduct(Product prod, int quantity, String username, String password){
-    
-  }
+  public void deleteProduct(Product prod, int quantity, String username, String password) {}
 
   @Override
   public Product findById(String id) {
@@ -76,14 +74,14 @@ public class ShoppingCartDAO implements CrudDAO<Product> {
     throw new UnsupportedOperationException("Unimplemented method 'findById'");
   }
 
-  public List<Product> findAllWithId(String sc_id){
+  public List<Product> findAllWithId(String sc_id) {
     List<Product> shopList = new ArrayList<>();
-    try(Connection conn = ConnectionFactory.getInstance().getConnection()){
+    try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
       String sql = "SELECT * FROM cart_items WHERE cart_id = ?";
-      try(PreparedStatement ps = conn.prepareStatement(sql)){
+      try (PreparedStatement ps = conn.prepareStatement(sql)) {
         ps.setString(1, sc_id);
-        try(ResultSet rs = ps.executeQuery()){
-          while(rs.next()){
+        try (ResultSet rs = ps.executeQuery()) {
+          while (rs.next()) {
             Product prod = new Product(getProductWithId(rs.getString("product_id")));
             prod.setPrice(rs.getDouble("price"));
             prod.setQuantity(rs.getInt("quantity"));
@@ -100,6 +98,7 @@ public class ShoppingCartDAO implements CrudDAO<Product> {
     }
     return shopList;
   }
+
   @Override
   public List<Product> findAll() {
     // TODO Auto-generated method stub
@@ -109,13 +108,13 @@ public class ShoppingCartDAO implements CrudDAO<Product> {
   /* --------------------Helper Methods-------------------------------- */
   /* ------------------------------------------------------------------ */
 
-  public Product getProductWithId(String product_id){
-    try(Connection conn = ConnectionFactory.getInstance().getConnection()){
+  public Product getProductWithId(String product_id) {
+    try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
       String sql = "SELECT * FROM products where product_id = ?";
-      try(PreparedStatement ps = conn.prepareStatement(sql)){
+      try (PreparedStatement ps = conn.prepareStatement(sql)) {
         ps.setString(1, product_id);
-        try(ResultSet rs = ps.executeQuery()){
-          if(rs.next()){
+        try (ResultSet rs = ps.executeQuery()) {
+          if (rs.next()) {
             Product prod = new Product();
             prod.setProduct_id(rs.getString("product_id"));
             prod.setName(rs.getString("name"));
