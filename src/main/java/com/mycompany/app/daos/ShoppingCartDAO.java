@@ -27,8 +27,7 @@ public class ShoppingCartDAO {
   public void addNewToCart(Product prod, int quantity, String cartId) {
     try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
       String sql =
-          "insert into cart_items (id, quantity, price, cart_id, product_id) values (?, ?, ?, ?,"
-              + " ?)";
+          "insert into ecommerce.cart_items (id, quantity, price, cart_id, product_id) values (?, ?, ?, ?, ?)";
       try (PreparedStatement ps = conn.prepareStatement(sql)) {
         ps.setString(1, UUID.randomUUID().toString());
         ps.setInt(2, quantity);
@@ -36,7 +35,8 @@ public class ShoppingCartDAO {
         ps.setString(4, cartId);
         ps.setString(5, prod.getProduct_id());
         System.out.println(ps.toString());
-        ps.executeUpdate();
+        ps.execute();
+        conn.commit();
       }
     } catch (SQLException e) {
       throw new RuntimeException("Unable to connect to DB cart_items \n", e);

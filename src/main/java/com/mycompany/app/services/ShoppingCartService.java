@@ -13,9 +13,9 @@ public class ShoppingCartService {
 
   // add, delete, getall from cart
   public void addProduct(Product prod, String username) {
-    String tempId = sCartDAO.findbyLoginHelperUID(username);
-    String tempId2 = sCartDAO.getShoppingCartIdWithUID(tempId);
-    sCartDAO.addToCart(prod, prod.getQuantity(), tempId, tempId2);
+    String userId = sCartDAO.findbyLoginHelperUID(username);
+    String tempId2 = sCartDAO.getShoppingCartIdWithUID(userId);
+    sCartDAO.addToCart(prod, prod.getQuantity(), userId, tempId2);
   }
 
   public void deleteProduct(Product prod, int quantity, String username) {
