@@ -1,7 +1,5 @@
 package com.mycompany.app.services;
 
-import java.util.Optional;
-
 import org.mindrot.jbcrypt.BCrypt;
 import com.mycompany.app.daos.UserDAO;
 import com.mycompany.app.models.Role;
@@ -19,9 +17,12 @@ public class UserService {
   }
 
   public boolean isUniqueUsername(String username) {
-    Optional<User> userOpt = userDao.findByUsername(username);
+    User userOpt = userDao.findByUsername(username);
 
-    return userOpt.isEmpty();
+    if (userOpt == null) {
+      return true;
+    }
+    return false;
   }
 
   public boolean isValidPassword(String password) {
@@ -38,5 +39,14 @@ public class UserService {
     User newUser = new User(username, hashedPassword, foundRole.getId());
     userDao.save(newUser);
     return newUser;
+  }
+
+  public User login(String username, String password) {
+    User userOpt = userDao.findByUsername(username);
+    if (userOpt != null && BCrypt.checkpw(password, userOpt.getPassword())) {
+      return userOpt;
+    } else {
+      return null;
+    }
   }
 }
