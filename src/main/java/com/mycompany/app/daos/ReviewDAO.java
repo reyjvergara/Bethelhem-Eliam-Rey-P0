@@ -40,10 +40,31 @@ public class ReviewDAO implements CrudDAO<Review> {
     throw new UnsupportedOperationException("Unimplemented method 'findAll'");
   }
 
+  public void createReview(Review review) {
+    try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+      String sql =
+          "INSERT INTO review (review_id, username, product_id, rating, message) VALUES (?,"
+              + " ?,?,?,?)";
+      PreparedStatement ps = conn.prepareStatement(sql);
+      ps.setString(1, review.getReview_id());
+      ps.setString(2, review.getUsername());
+      ps.setString(3, review.getProduct_id());
+      ps.setInt(4, review.getRating());
+      ps.setString(5, review.getMessage());
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    } catch (ClassNotFoundException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
   public List<Review> findAllReviewsSameProductId(String product_id) {
     List<Review> reviews = new ArrayList<Review>();
     try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-      String sql = "SELECT * FROM reviews WHERE product_id = (?)";
+      String sql = "SELECT * FROM review WHERE product_id = (?)";
       PreparedStatement preparedStatement = conn.prepareStatement(sql);
       preparedStatement.setString(1, product_id);
       ResultSet rs = preparedStatement.executeQuery();
