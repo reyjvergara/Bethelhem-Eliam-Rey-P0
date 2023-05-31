@@ -18,8 +18,8 @@ public class User {
   private String id;
   private String role_id;
 
-  public User(String username, String password, String roleId) {
-    this.id = UUID.randomUUID().toString();
+  public User(String username, String password, String roleId, UUID uuid) {
+    this.id = uuid.toString();
     this.username = username;
     this.password = password;
     this.role_id = roleId;
