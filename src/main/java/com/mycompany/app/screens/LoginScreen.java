@@ -63,14 +63,14 @@ public class LoginScreen implements IScreen {
             switch (choice) {
               case 1:
                 clearScreen();
-                router.navigate("/product", sc);
+                router.navigate("/products", sc, username);
                 break;
               case 2:
                 clearScreen();
-                router.navigate("/shoppingcart", sc);
+                router.navigate("/shoppingcart", sc, username);
               case 3:
                 clearScreen();
-                router.navigate("/orderhistory", sc);
+                router.navigate("/orderhistory", sc, username);
               case 4:
                 logger.info("Logout");
                 router.navigate("/logout", sc);
